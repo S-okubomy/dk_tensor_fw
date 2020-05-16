@@ -1,0 +1,38 @@
+version: '3'
+services:
+###########ここからAppサーバの設定###########
+  app_tensor:
+    container_name: app_tensor
+    # サービス再起動ポリシー
+    restart: always
+    # ビルドするdockerファイルが格納されたディレクトリ
+    build: ./app_tensor
+    volumes:
+      # マウントするディレクトリ
+      - ./app_tensor:/dk_tensor_fw/app_tensor
+    ports:
+      # ホスト側のポート：コンテナ側のポート
+      - 7010:7010
+    networks:
+      - nginx_network
+###########ここまでAppサーバの設定###########
+
+###########ここからWebサーバの設定###########
+  web-nginx:
+    container_name: web-nginx
+    build: ./web_nginx
+    volumes:
+      # マウントするディレクトリ
+      - ./web_nginx:/dk_tensor_fw/web_nginx
+    ports:
+      # ホストPCの7020番をコンテナの7020番にポートフォワーディング
+      - 7020:7020
+    depends_on:
+      # 依存関係を指定。web-serverの起動より前にapp-serverを起動するようになる
+      - app_tensor
+    networks:
+      - nginx_network
+###########ここまでWebサーバの設定###########
+networks:
+  nginx_network:
+    driver: bridge
