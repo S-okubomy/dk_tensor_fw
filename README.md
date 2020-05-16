@@ -3,7 +3,7 @@ using docker-compose
 
 ## 使い方
 
-```使い方:使い方
+```:使い方
 #空いているポート調べる（何も表示されなければ空いてる）
 netstat -an | grep 7000
 
@@ -26,5 +26,6 @@ docker-compose rm
 
 ## Web APIへアクセス
 
-* （例1） http://localhost:7020/alexspeak/api/how-to-spend
-* （例2） http://localhost:7020/recommend/api/what-music/ハンバード・ハンバードさんが歌う切ない曲
+* （例1） http://localhost:7020/recommend/api/what-music/ハンバード・ハンバードさんが歌う切ない曲
+* （例2） http://localhost:7020/recommend/api/what-music/出会いをテーマにした曲でみゆきさんが歌う
+* （例2） http://localhost:7020/recommend/api/what-music/切なくて誰かの幸せ願う歌
