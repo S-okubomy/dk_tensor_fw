@@ -13,7 +13,6 @@ files = [] # 全文書をIDで保存
 def iniForOri():
     global files # グローバル変数を関数内で使用する場合は、 global で定義
     files = []
-    print(files)
 
 def tokenize(text):
     '''MeCabで形態素解析を行う''' # --- (*3)

@@ -15,25 +15,29 @@ y = []
 x = []
 
 # ラベルのコード変換用 辞書
-labelToCode = {"TSUNAMI":0, "雲がゆくのは":1, "空も飛べるはず":2
-               , "糸":3, "おなじ話":4, "今宵の月のように":5, "贈る言葉":6
-               ,"サボテンの花":7, "民衆の歌":8, "いつも何度でも":9}
+labelToCode = {}
 
 # csvファイルを読み込む
 def read_file(path):
     '''テキストファイルを学習用に追加する''' # --- (*6)
     with open(path, "r", encoding="utf-8") as f:
-        reader = csv.reader(f)     
+        reader = csv.reader(f)   
+        label_id = 0  
         for row in reader:
+            # ラベルコード作成
+            if row[2] not in labelToCode:
+                labelToCode[row[2]] = label_id
+                label_id += 1
+
             y.append(labelToCode[row[2]])  # ラベルをセット
             tfidfWithIni.add_text(row[3])  # 文章をセット
-            print("ラベル: ", row[2], "(", labelToCode[row[2]], ")",  " 文章: ", row[3])
+           # print("ラベル: ", row[2], "(", labelToCode[row[2]], ")",  " 文章: ", row[3])
 
 # モジュールのテスト --- (*15)
 if __name__ == '__main__':
     # TF-IDFベクトルを初期化(filesを空にする)
     tfidfWithIni.iniForOri()
-    
+
     # ファイル一覧を読む --- (*2)
     read_file("inputFile/ans_studyInput_fork.txt")
 
@@ -43,8 +47,7 @@ if __name__ == '__main__':
     # 保存 --- (*4)
     pickle.dump([y, x], open('studyModel/genre.pickle', 'wb'))
     tfidfWithIni.save_dic('studyModel/genre-tdidf.dic')
-    # print(x)
-    print('ok')
+    pickle.dump(labelToCode, open('studyModel/label_to_code.pickle', 'wb'))
 
 
 """
@@ -63,22 +66,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 import h5py
 
-# 分類するラベルの数 --- (*1)
-nb_classes = len(labelToCode)  # TODO 修正
+# 分類するラベルの数
+labelToCode = pickle.load(open("studyModel/label_to_code.pickle", "rb"))
+nb_classes = len(labelToCode) 
 
-# データベースの読込 --- (*2)
+# データベースの読込
 data = pickle.load(open("studyModel/genre.pickle", "rb"))
 y = data[0] # ラベルコード
 x = data[1] # TF-IDF
-# ラベルデータをone-hotベクトルに直す --- (*3)
+# ラベルデータをone-hotベクトルに直す
 y = keras.utils.np_utils.to_categorical(y, nb_classes)
 in_size = x[0].shape[0] # 入力x[0]の要素数
 
-# 学習用とテスト用を分ける --- (*4)
+# 学習用とテスト用を分ける
 x_train, x_test, y_train, y_test = train_test_split(
         np.array(x), np.array(y), test_size=0.2)
 
-# MLPモデル構造を定義 --- (*5)
+# MLPモデル構造を定義
 model = Sequential()
 model.add(Dense(512, activation='relu', input_shape=(in_size,)))
 model.add(Dropout(0.2))
@@ -86,29 +90,28 @@ model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(nb_classes, activation='softmax'))
 
-# モデルをコンパイル --- (*6)
+# モデルをコンパイル
 model.compile(
     loss='categorical_crossentropy',
     optimizer=RMSprop(),
     metrics=['accuracy'])
 
-# 学習を実行 --- (*7)
+# 学習を実行
 hist = model.fit(x_train, y_train,
-          batch_size=16, # 128 → x 
-          epochs=150,  # TODO 調整 反復回数
+          batch_size=16, # 1回に計算するデータ数
+          epochs=150,    # 学習の繰り返し回数みたいなもの
           verbose=1,
           validation_data=(x_test, y_test))
 
-# 評価する ---(*8)
+# 評価する
 score = model.evaluate(x_test, y_test, verbose=1)
 print("正解率=", score[1], 'loss=', score[0])
 
-# 重みデータを保存 --- (*9)
+# 重みデータを保存
 model.save_weights('./studyModel/genre-model.hdf5')
 
-# 学習の様子をグラフへ描画 --- (*10)
-plt.plot(hist.history['acc'])
-plt.plot(hist.history['val_acc'])
+# 学習の様子をグラフへ描画
+plt.plot(hist.history['val_accuracy'])
 plt.title('Accuracy')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
