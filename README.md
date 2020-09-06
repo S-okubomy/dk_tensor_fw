@@ -7,7 +7,7 @@ using docker-compose
 http://localhost:7020/recommend/api/what-music/青春 ドラマ
 ```
 
-## 注意及び前提
+## 開発サーバ起動する場合の注意
 FlaskにてデバッグモードをONにするとtensorflowでエラーとなる。
 そのため、ソースコード変更毎に開発サーバを再起動する必要がある。
 ```
