@@ -31,7 +31,6 @@ def getMusicName(text):
     print(recMusicName, predict_val)
     return recMusicName, predict_val
 
-
 # ラベルの定義
 labelToCode = pickle.load(open("studyModel/label_to_code.pickle", "rb"))
 nb_classes = len(labelToCode) 

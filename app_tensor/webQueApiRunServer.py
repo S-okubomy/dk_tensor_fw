@@ -17,7 +17,7 @@ def get_recom_music(how_music):
 # オススメの楽曲名を返す
 def getRecoMusicMoji(how_music):
 
-    recMusicName, predict_val = exeWhatMusic.check_genre(how_music)
+    recMusicName, predict_val = exeWhatMusic.getMusicName(how_music)
 
     #JSON作成
     recoMusicInfoJson = [
@@ -33,4 +33,3 @@ def getRecoMusicMoji(how_music):
 if __name__ == "__main__":
     print(" * Flask starting server...")
     app.run(threaded=False, host="0.0.0.0", port=int(os.environ.get("PORT", TM_PORT_NO)))
-

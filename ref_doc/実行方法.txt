@@ -1,0 +1,64 @@
+●Docker 起動 
+(1)右クリックで「Ubuntsu 18.04」管理者権限で開く
+cd /mnt/c/Users/Okubo/Documents/dk
+./Docker.sh
+-2
+docker run -p 8080:80 -itv /mnt/c/Users/Okubo/Documents/ws-2020-biz/sample/test/XXXX:/var/XXXX t_XXXX /bin/bash
+cd /var/XXXX
+
+●update
+sudo apt-get update
+
+
+●空いているポート調べる
+# 出てなければ空いてる
+netstat -an | grep 7000
+
+●docker コマンド
+
+
+cd /mnt/c/Users/Okubo/Documents/ws-2020-biz/sample/test/XXXX
+
+docker build ./ -t ex_XXXX
+docker run -itv /mnt/c/Users/Okubo/Documents/ws-2020-biz/sample/test/XXXX:/var/XXXX ex_XXXX /bin/bash
+
+docker exec -it de4101ffadd4 bash
+
+
+docker run -p 3000:80 -itv /mnt/c/Users/Okubo/Documents/ws-2020-biz/sample/test/XXXX:/var/XXXX ex_XXXX /bin/bash
+
+docker start 6825
+docker attach laughing_ardinghelli
+
+
+イメージ強制削除
+docker rmi -f 2f37bab81128
+
+
+●docker-compose
+docker-compose --version
+docker-compose up -d --build
+docker-compose ps
+docker-compose exec サービス名 /bin/bash
+docker-compose exec dk_ai /bin/bash
+
+docker-compose stop
+停止
+docker-compose down
+削除
+docker-compose rm
+
+
+
+●参考URL
+https://qiita.com/tifa2chan/items/e9aa408244687a63a0ae
+https://qiita.com/Yarimizu14/items/52f4859027165a805630
+https://qiita.com/kooohei/items/0e788a2ce8c30f9dba53
+https://qiita.com/qwAskif9910/items/0b5b5061a079ac7ff17c
+
+vs
+https://qiita.com/oruponu/items/ae9c720d4522c1606daf
+
+
+VS CodeでDockerのPython環境でリモート開発
+https://chigusa-web.com/blog/vs-code%E3%81%A7docker%E3%81%AEpython%E7%92%B0%E5%A2%83%E3%81%A7%E3%83%AA%E3%83%A2%E3%83%BC%E3%83%88%E9%96%8B%E7%99%BA/
